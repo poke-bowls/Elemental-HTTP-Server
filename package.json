@@ -1,0 +1,24 @@
+{
+  "name": "Elemental-HTTP-Server",
+  "version": "1.0.0",
+  "description": "### Basic HTTP Server that reads from and writes to fs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/poke-bowls/Elemental-HTTP-Server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/poke-bowls/Elemental-HTTP-Server/issues"
+  },
+  "homepage": "https://github.com/poke-bowls/Elemental-HTTP-Server#readme",
+  "dependencies": {
+    "handlebars": "^4.0.5"
+  }
+}

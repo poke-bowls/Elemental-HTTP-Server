@@ -1,15 +1,13 @@
 var http = require( 'http' );
 var fs = require( 'fs' );
-var moment = require( 'moment-timezone' );
 var querystring = require( 'querystring' );
+var Handlebars = require( 'handlebars' );
 
 var server = http.createServer( onConnect ).listen( 8080, function(){
   console.log('server started');
 });
 
 function onConnect( request, response ) {
-  var today = new Date();
-  var UTCstring = moment(today.toUTCString()).tz( 'Pacific/Honolulu' ).format('MM/DD/YYYY hh:mm:ss a');
 
   var path = request.url;
 
@@ -52,11 +50,53 @@ function onConnect( request, response ) {
 
     // console.log( response );
     if( request.url === '/elements' ) {
+
       request.on( 'data', function( buffer ){
         console.log( querystring.parse(buffer.toString()) );
         var form = querystring.parse(buffer.toString());
-        console.log( form.elementName.toLowerCase() );
+        console.log( form.elementName );
+        var element = form.elementName.toLowerCase();
+
+        //readfile first then handlebar data
+
+        fs.readFile( './public/template.html', function( err, data ) {
+          console.log( data.toString() );
+
+            var source =  data.toString();
+                          //yeeeee, boiiiiiiiiiii
+
+                          // '<!DOCTYPE html>' +
+                          // '<html lang="en">' +
+                          // '<head>' +
+                          // '<meta charset="UTF-8">' +
+                          // '<title>The Elements - {{ elementName }}</title>' +
+                          // '<link rel="stylesheet" href="./css/styles.css">' +
+                          // '</head>' +
+                          // '<body>' +
+                          // '<h1>{{ elementName }}</h1>' +
+                          // '<h2>{{ elementSymbol }}</h2>' +
+                          // '<h3>Atomic number {{ elementAtomicNumber }}</h3>' +
+                          // '<p>{{ elementDescription }}</p>' +
+                          // '<p><a href="/">back</a></p>' +
+                          // '</body>' +
+                          // '</html>';
+            var template = Handlebars.compile( source );
+            var result = template( form );
+
+            console.log( result );
+
+            data = result;
+
+          fs.writeFile( 'public/' + element + '.html', data, function( err ) {
+            if ( err ) {
+              console.log( err );
+            }
+          });
+        });
+
+
       });
+//stats
     }
 
   // }
