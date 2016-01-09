@@ -83,12 +83,12 @@ function onConnect( request, response ) {
               var number = { numberElements: elements};
 
               var source = data.toString();
-              console.log( source );
               var template = Handlebars.compile( source );
               var result = template( number );
               var newIndex = result.replace( '</ol>', '<li>\n<a href="/' + element + '.html">' + form.elementName + '</a>\n</li>\n' + '</ol>' );
+              var newIndexTemplate = source.replace( '</ol>', '<li>\n<a href="/' + element + '.html">' + form.elementName + '</a>\n</li>\n' + '</ol>' );
 
-              fs.writeFile( 'public/indexTemplate.html', newIndex, function( err, data ) {
+              fs.writeFile( 'public/indexTemplate.html', newIndexTemplate, function( err, data ) {
                 if( err ) {
                   console.log( err );
                 }
@@ -98,8 +98,6 @@ function onConnect( request, response ) {
                 if( err ) {
                   console.log( err );
                 }
-
-                response.end();
               });
             });
             });
