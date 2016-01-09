@@ -4,7 +4,7 @@ var querystring = require( 'querystring' );
 var Handlebars = require( 'handlebars' );
 
 var server = http.createServer( onConnect ).listen( 8080, function(){
-  console.log('server started');
+  console.log('Server Started');
 });
 
 function onConnect( request, response ) {
@@ -15,10 +15,28 @@ function onConnect( request, response ) {
     path = '/index.html';
   }
 
+  //if path = / or /index.html
+  //get an array of all elements
+  //fs.readdir( 'public/', function( err, files ) {
+  //if (err) console.log(err)
+  //console.log(files);
+  //var elementArr = files.filter( curr, index, array );
+  //  return
+  //    curr !== '.keep' &&
+  //    curr !== '404.html' &&
+  //    curr !== 'css' &&
+  //    curr !== 'index.html'
+  // });
+
+
+
   //handle client 'GET' requests and 'POST' requests
   //redirect requests to public folder
 
+
+
   // if( request.method === 'GET' ) {
+    //can use if/else statements or switch cases to handle instances of each method
 
     // fs.readFile( './public/' + path, function( err, data ){
     //   if( err ){
@@ -52,49 +70,40 @@ function onConnect( request, response ) {
     if( request.url === '/elements' ) {
 
       request.on( 'data', function( buffer ){
-        console.log( querystring.parse(buffer.toString()) );
+
         var form = querystring.parse(buffer.toString());
-        console.log( form.elementName );
+
         var element = form.elementName.toLowerCase();
 
         //readfile first then handlebar data
+        //adding a new html page with the input data
 
-        fs.readFile( './public/template.html', function( err, data ) {
-          console.log( data.toString() );
+        fs.readFile( './public/elementTemplate.html', function( err, data ) {
 
             var source =  data.toString();
-                          //yeeeee, boiiiiiiiiiii
-
-                          // '<!DOCTYPE html>' +
-                          // '<html lang="en">' +
-                          // '<head>' +
-                          // '<meta charset="UTF-8">' +
-                          // '<title>The Elements - {{ elementName }}</title>' +
-                          // '<link rel="stylesheet" href="./css/styles.css">' +
-                          // '</head>' +
-                          // '<body>' +
-                          // '<h1>{{ elementName }}</h1>' +
-                          // '<h2>{{ elementSymbol }}</h2>' +
-                          // '<h3>Atomic number {{ elementAtomicNumber }}</h3>' +
-                          // '<p>{{ elementDescription }}</p>' +
-                          // '<p><a href="/">back</a></p>' +
-                          // '</body>' +
-                          // '</html>';
             var template = Handlebars.compile( source );
             var result = template( form );
 
-            console.log( result );
-
-            data = result;
-
-          fs.writeFile( 'public/' + element + '.html', data, function( err ) {
+          fs.writeFile( 'public/' + element + '.html', result, function( err ) {
             if ( err ) {
               console.log( err );
             }
+
+            response.writeHead( 200, {
+              'Content-Type' : 'application/json'
+            });
+
+            response.end( JSON.stringify({'success' : true}) );
           });
         });
 
+        fs.readFile( './public/indexTemplate.html', function( err, data ) {
 
+          var source = data.toString();
+          var template = Handlebars.compile( source );
+          var result = template(  );
+
+        });
       });
 //stats
     }
