@@ -15,26 +15,6 @@ function onConnect( request, response ) {
     path = '/index.html';
   }
 
-  //if path = / or /index.html
-  //get an array of all elements
-  //fs.readdir( 'public/', function( err, files ) {
-  //if (err) console.log(err)
-  //console.log(files);
-  //var elementArr = files.filter( curr, index, array );
-  //  return
-  //    curr !== '.keep' &&
-  //    curr !== '404.html' &&
-  //    curr !== 'css' &&
-  //    curr !== 'index.html'
-  // });
-
-
-
-  //handle client 'GET' requests and 'POST' requests
-  //redirect requests to public folder
-
-
-
   // if( request.method === 'GET' ) {
     //can use if/else statements or switch cases to handle instances of each method
 
@@ -89,6 +69,31 @@ function onConnect( request, response ) {
               console.log( err );
             }
 
+            fs.readdir( 'public/', function( err, files ) {
+              if (err) console.log(err);
+              var excludedFiles = [ '.keep', '404.html', 'css', 'index.html', 'indexTemplate.html', '.DS_Store', 'elementTemplate.html' ];
+              var elementArr = files.filter( function( curr, index, array ){
+
+              return excludedFiles.indexOf( curr ) === -1;
+            });
+            elements = elementArr.length;
+
+            fs.readFile( './public/indexTemplate.html', function( err, data ) {
+              var number = { numberElements: elements};
+
+              var source = data.toString();
+              var template = Handlebars.compile( source );
+              var result = template( number );
+
+              fs.writeFile( 'public/index.html', result, function( err ) {
+                if( err ) {
+                  console.log( err );
+                }
+                response.end();
+              });
+            });
+            });
+
             response.writeHead( 200, {
               'Content-Type' : 'application/json'
             });
@@ -97,13 +102,6 @@ function onConnect( request, response ) {
           });
         });
 
-        fs.readFile( './public/indexTemplate.html', function( err, data ) {
-
-          var source = data.toString();
-          var template = Handlebars.compile( source );
-          var result = template(  );
-
-        });
       });
 //stats
     }
