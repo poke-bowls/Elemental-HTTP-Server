@@ -15,38 +15,36 @@ function onConnect( request, response ) {
     path = '/index.html';
   }
 
-  // if( request.method === 'GET' ) {
-  //   // can use if/else statements or switch cases to handle instances of each method
+  if( request.method === 'GET' ) {
 
-  //   fs.readFile( './public/' + path, function( err, data ){
-  //     if( err ){
-  //       return notFound();
-  //     }
-  //     response.writeHead( 200, {
-  //           'Server' : 'Narnia\n',
-  //           'Content-Length':  data.length + '\n',
-  //           // 'Content-Type': 'text/' + path.split('.');
-  //         });
-  //     return response.end( data );
-  //   });
+    fs.readFile( './public/' + path, function( err, data ){
+      if( err ){
+        return notFound();
+      }
+      response.writeHead( 200, {
+            'Server' : 'Narnia\n',
+            'Content-Length':  data.length + '\n',
+            'Content-Type': 'text' + path.split('.')
+          });
+      return response.end( data );
+    });
 
-  //   var notFound = function () {
-  //     fs.readFile( './public/404.html' , function( err, data ) {
-  //       if(err) console.log(err);
+    var notFound = function () {
+      fs.readFile( './public/404.html' , function( err, data ) {
+        if(err) console.log(err);
 
-  //       response.writeHead( 404, {
-  //         'Server' : 'Narnia\n',
-  //         'Content-Length':  data.length + '\n',
-  //         // 'Content-Type':
-  //       });
-  //       response.write( data );
-  //     return response.end( data );
-  //     });
-  //   };
+        response.writeHead( 404, {
+          'Server' : 'Narnia\n',
+          'Content-Length':  data.length + '\n',
+          'Content-Type': 'text/html'
+        });
+        response.write( data );
+      return response.end( data );
+      });
+    };
 
-  // } else if( request.method === 'POST' ) {
+  } else if( request.method === 'POST' ) {
 
-    // console.log( response );
     if( request.url === '/elements' ) {
 
       request.on( 'data', function( buffer ){
@@ -54,9 +52,6 @@ function onConnect( request, response ) {
         var form = querystring.parse(buffer.toString());
 
         var element = form.elementName.toLowerCase();
-
-        //readfile first then handlebar data
-        //adding a new html page with the input data
 
         fs.readFile( './public/elementTemplate.html', function( err, data ) {
 
@@ -75,7 +70,6 @@ function onConnect( request, response ) {
               var elementArr = files.filter( function( curr, index, array ){
               return excludedFiles.indexOf( curr ) === -1;
             });
-            console.log( elementArr );
 
             elements = elementArr.length;
 
@@ -111,8 +105,23 @@ function onConnect( request, response ) {
         });
 
       });
-//stats
     }
+  } else if( request.method === 'PUT' ) {
 
-  // }
+    fs.readFile( './public/' + path, function( err, data ){
+      if( err ){
+        // return notFound();
+      }
+      response.writeHead( 200, {
+            'Server' : 'Narnia\n',
+            'Content-Length':  data.length + '\n',
+            'Content-Type': 'text' + path.split('.')
+          });
+      return response.end( data );
+    });
+
+
+  // } else if( request.method === 'DELETE' ) {
+
+  }
 }
